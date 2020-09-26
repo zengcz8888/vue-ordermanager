@@ -68,7 +68,7 @@ import { usercheckoldpwd,usereditpwd } from '@/api/apis'
                         .catch(() => {
                             this.$message({
                                 type: "info",
-                                message: "已取消修改"
+                                message: "修改失败"
                             });
                         });
                     }else{

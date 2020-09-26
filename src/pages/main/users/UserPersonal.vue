@@ -41,7 +41,7 @@
                     管理员头像：<img :src="imgUrl" alt="">
                     <el-upload
                     class="avatar-uploader"
-                    action="http://127.0.0.1:5000/users/avatar_upload"
+                    :action="USERS_IMG_ACC"
                     :show-file-list="false"
                     :on-success="handleAvatarSuccess"
                     
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { accountinfo } from '@/api/apis'
+import { accountinfo,USERS_IMG_ACC,useredit } from '@/api/apis'
 import { getChinatime } from '@/utils/utils'
     export default {
         data(){
@@ -73,7 +73,8 @@ import { getChinatime } from '@/utils/utils'
                 userGroup:'',
                 imgUrl:'',
                 data:{},
-                show:true
+                show:true,
+                USERS_IMG_ACC:''
                 
             }
         },
@@ -89,11 +90,42 @@ import { getChinatime } from '@/utils/utils'
             },
             clickBtn(){
                 this.show = !this.show
+                
+                    
+                    this.$confirm("此操作将永久修改数据, 是否继续?", {
+                    confirmButtonText: "继续修改",
+                    cancelButtonText: "不了",
+                    type: "warning"
+                }).then(() => {
+                    let obj = {id:this.id,account:this.account,userGroup:this.userGroup}
+                    useredit(obj).then(res => {
+                        
+                        if (res.data.code == 0){
+                            this.$message({
+                                type: "success",
+                                message: "修改成功!"
+                            });
+                        }
+                    });
+
+                    this.$message({
+                        type: "success",
+                        message: "修改成功!"
+                    });
+                    })
+                    .catch(() => {
+                        this.$message({
+                            type: "info",
+                            message: "已取消修改"
+                        });
+                    });
+                
             }
         },
         created(){
-            this.data = {id:localStorage.id};
-            accountinfo(localStorage.getItem('id')).then(res => {
+            this.USERS_IMG_ACC = USERS_IMG_ACC
+            this.data = {id:this.id};
+            accountinfo(this.id).then(res => {
                     
                     
                         

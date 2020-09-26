@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-aside width="200px">
-            <el-menu default-active="/main/index" class="el-menu-vertical-demo" background-color="#202020" text-color="#fff" fontWeight="bold" active-text-color="#ffd04b" router unique-opened>
+            <el-menu :default-active="hash" class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" fontWeight="bold" active-text-color="#ffd04b" router unique-opened>
 
                 <div v-for='(item,index) in powerarr' :key="index">
 
@@ -29,7 +29,7 @@
 
         <el-container>
 
-        <el-header  style="background:#b6b6b6;color:#fff;">
+        <el-header  style="border-bottom:1px solid #ccc">
 
             <div>
                 <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -39,12 +39,12 @@
             </div>
 
             <div class="user_img">
-                <p>{{ username }}</p>
+                <p @click="clickLog">{{ username }}</p>
                 <img :src="imgUrl" alt="" style="width:50px;border-radius:50%"  @click="clickpersonal" />
             </div>
         </el-header>
 
-        <el-main>
+        <el-main  name="el-fade-in-linear">
             <router-view></router-view>
         </el-main>
 
@@ -80,7 +80,7 @@ export default {
                     index:'3',
                     i:'el-icon-shopping-bag-1',
                     name:'商品管理',
-                    roles:['super','normal'],
+                    roles:['super'],
                     children:[
                         {
                             index:'/main/items/itemslist',
@@ -108,7 +108,7 @@ export default {
                     index:'5',
                     i:'el-icon-user',
                     name:'账号管理',
-                    roles:['super', "normal"],
+                    roles:['super'],
                     children:[
                         {
                             index:'/main/users/userlist',
@@ -141,6 +141,7 @@ export default {
                 }
             ],
             breadlist:[],
+            hash:'/main/index'
         }
     },
     computed:{
@@ -153,17 +154,23 @@ export default {
         
     },
     methods:{
+        clickLog(){
+            if(this.username =='请登录'){
+                this.$router.push('/')
+            }
+        },
         clickpersonal(){
             this.$router.push('/main/users/userpersonal')
         },
         refreshinfo(){
-            accountinfo(localStorage.getItem('id')).then(res => {
+            accountinfo(localStorage.id).then(res => {
             this.imgUrl = res.data.accountInfo.imgUrl
             
             })
         }
     },
     created() {
+        this.hash = this.$route.path
         checktoKen(localStorage.token).then(res => {
         if (res.data.code == 0) {
             
@@ -175,9 +182,8 @@ export default {
         }
         }),
         this.refreshinfo()
-        this.$bus.$on('imgfinish',() => {
-            this.refreshinfo()
-        })
+        this.$bus.$on('imgfinish',() => this.refreshinfo())
+            
         this.breadlist = this.$route.meta.breadlist;
   }
     ,
@@ -193,8 +199,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@base: #202020;
-@graybase: #b81d18;
+@base: #545c64;
+@graybase:  #F56C6C;
 
 .el-container{
     height: 100%;

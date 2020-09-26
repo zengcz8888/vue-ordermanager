@@ -3,7 +3,7 @@
         <div class="title_div">
             添加账号
         </div>
-        <el-form  status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm" style="width:300px">
+        <el-form  status-icon  label-width="100px" class="demo-ruleForm" style="width:300px">
 
             <el-form-item label="账号" prop="user">
                 <el-input type="text" v-model="acc" autocomplete="off"></el-input>
@@ -94,6 +94,7 @@ import { useradd } from '@/api/apis'
         .title_div{
             border-bottom:1px solid #ccc; 
             padding-bottom: 10px;
+            margin-bottom: 20px;
             
         }
         .title_p{

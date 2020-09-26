@@ -2,7 +2,7 @@
     <div class="item_div">
         <div class="title_div">
             <p>商品分类</p>
-            <el-button type="primary" size='mini'>添加分类</el-button>
+            <el-button type="primary" size='mini' @click="show = true">添加分类</el-button>
         </div>
         <el-table :data="tableData" style="width: 100%;">
 
@@ -39,11 +39,29 @@
         :total="total" 
         style="marginTop:20px;"
         ></el-pagination>
+
+        <el-dialog title="添加分类" :visible.sync="show" width="30%">
+
+            <el-form label-width="80px">
+                <el-form-item label="分类名称">
+                    <el-input v-model="cateName"></el-input>
+                </el-form-item>
+                <el-form-item label="是否启用">
+                    <el-switch v-model="state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+                </el-form-item>
+            </el-form>
+
+
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="show=false">取 消</el-button>
+                <el-button type="primary" @click="clickChangeItems">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { itemcatelist,itemeditcate } from '@/api/apis'
+import { itemcatelist,itemeditcate,itemaddcate,itemdelcate } from '@/api/apis'
     export default {
         data(){
             return{
@@ -51,7 +69,9 @@ import { itemcatelist,itemeditcate } from '@/api/apis'
                 currentPage: 1,
                 pagesize: 5, 
                 total: 50 ,
-                
+                show:false,
+                state:true,
+                cateName:''
             }
         },
         methods: {
@@ -82,7 +102,7 @@ import { itemcatelist,itemeditcate } from '@/api/apis'
                     itemeditcate(scope.row).then(res => {
                         if(res.data.code == 0){
                             this.$message({
-                                message: "玉团系统提示：店铺分类修改成功",
+                                message: "店铺分类修改成功",
                                 type: "success"
                             });
                             scope.row.isedit = false;
@@ -93,20 +113,54 @@ import { itemcatelist,itemeditcate } from '@/api/apis'
                     scope.row.isedit = true
                 }
             },
-            clickDelete(){
+            clickDelete(scope){
+                
 
+                this.$confirm("此操作将永久删除数据, 是否继续?", {
+                    confirmButtonText: "狠心删除",
+                    cancelButtonText: "保留数据",
+                    type: "warning"
+                }).then(() => {
+                    itemdelcate(scope.row.id).then(res => {
+                        if(res.data.code == 0) this.getitemlist()
+                            
+                        
+                    })
+
+                    this.$message({
+                        type: "success",
+                        message: "删除成功!"
+                    });
+                    })
+                    .catch(() => {
+                        this.$message({
+                            type: "info",
+                            message: "已取消删除"
+                        });
+                    });
+                
+            },
+            clickChangeItems(){
+                if(this.cateName != ''&& this.state != ''){
+                    itemaddcate({cateName:this.cateName,state:this.state}).then(res => {
+                    if(res.data.code == 0){
+                        this.$message({
+                            type: "success",
+                            message: "添加商品分类成功！"
+                        });
+                        this.getitemlist()
+                        this.cateName = ''
+                        this.state = ''
+                    }
+                })
+                }else{
+                    this.$message({
+                        type: "success",
+                        message: "添加商品分类失败！"
+                    });
+                }
+                
             }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
         },
         created(){

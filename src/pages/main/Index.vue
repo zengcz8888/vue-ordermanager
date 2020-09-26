@@ -11,10 +11,15 @@
                 </div>
             </el-col>
         </el-row>
+        <div id="echarts">
+
+        </div>
     </div>
 </template>
 
 <script>
+import echarts from 'echarts'
+import { totaldata } from '@/api/apis'
     export default {
         data(){
             return{
@@ -40,8 +45,88 @@
                         name:'今日销售额',
                         num:10000,
                     },
-                ]
+                ],
+                
             }
+        },
+        mounted(){
+
+            totaldata().then(res => {
+                console.log(res.data)
+                this.list[0].num = res.data.totalOrder
+                this.list[1].num = res.data.totalAmount
+                this.list[2].num = res.data.todayOrder
+                this.list[3].num = res.data.totayAmount
+
+                let myecharts = echarts.init(document.getElementById('echarts'))
+
+                let option = {
+                    title: {
+                        text: '数据统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: ['金额数据', '订单数据', '注册人数', '管理员人数']
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: res.data.xData
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            name: '金额数据',
+                            type: 'line',
+                            stack: '总量',
+                            data: res.data.amountData
+                        },
+                        {
+                            name: '订单数据',
+                            type: 'line',
+                            stack: '总量',
+                            data: res.data.orderData
+                        },
+                        {
+                            name: '注册人数',
+                            type: 'line',
+                            stack: '总量',
+                            data: [150, 232, 201, 154, 190, 330, 410]
+                        },
+                        {
+                            name: '管理人数',
+                            type: 'line',
+                            stack: '总量',
+                            data: [320, 332, 301, 334, 390, 330, 320]
+                        },
+                        
+                    ]
+                };
+
+                myecharts.setOption(option)
+            })
+
+
+            
+
+        },
+        created(){
+            
         }
     }
 </script>
@@ -49,13 +134,14 @@
 <style lang="less" scoped>
     .index_div{
         padding: 10px;
+        background: #fff;
         .font_div{
             text-align: center;
             margin-top: 10px;
             
         }
         .name_p{
-            color: #D9D9D9;
+            color: #fff;
             margin-bottom: 10px;
         }
     }
@@ -70,7 +156,7 @@
   }
   
   .bg-purple {
-    background: #fff;
+    background:#545c64;
   }
   
   .grid-content {
@@ -86,6 +172,10 @@
   }
   .row-bg {
     padding: 10px 0;
-    background-color: #f9fafc;
+    background-color: #fff;
+  }
+  #echarts{
+      width: 100%;
+      height: 400px;
   }
 </style>

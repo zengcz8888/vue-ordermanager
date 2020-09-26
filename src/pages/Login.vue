@@ -1,12 +1,12 @@
 <template>
     <div class="log_div">
         <div class="log_box">
-            <h4>系统登录</h4>
+            <h4>激情外卖管理系统登录</h4>
             <el-input placeholder="请输入内容" v-model="acc" clearable prefix-icon="el-icon-user-solid" class="input"></el-input>
             
             <el-input placeholder="请输入密码" v-model="pwd" show-password prefix-icon="el-icon-lock" class="input"></el-input>
             <p class="error-p">{{ errormsg }}</p>
-            <el-button  style="width:100%; background:#004687; border:1px solid #004687; color:#fff" @click="clickLog">登录</el-button>
+            <el-button type="danger" style="width:100%;" @click="clickLog">登录</el-button>
         </div>
     </div>
 </template>
@@ -39,7 +39,7 @@ import {login} from '@/api/apis'
                         type:'success'
                     })
                 }else this.errormsg = res.data.msg
-                // res.data.msg
+                
             })
         }
     },
@@ -55,13 +55,16 @@ import {login} from '@/api/apis'
         display: flex;
         justify-content: center;
         align-items: center;
+        background: url('../assets/imgs/10 (17).jpg') no-repeat center center;
+        opacity:10;
+        
     }
     .log_box{
         width: 300px;
         height: 220px;
-        background:  #202020;
+        background: #c0201b96 ;
         padding: 10px;
-        
+        border-radius: 5px;
         h4{
             margin-bottom: 20px;
             color: #fff;

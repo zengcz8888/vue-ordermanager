@@ -25,7 +25,7 @@
                         </el-form-item>
 
                         <el-form-item label="商品图片">
-                            <span>{{ scope.row.imgUrl }}</span>
+                            <img :src="ITEMS_IMG_URL+scope.row.imgUrl" style="width:40px;height:45px;"/>
                         </el-form-item>
 
                         <el-form-item label="创建时间">

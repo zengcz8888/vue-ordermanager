@@ -170,8 +170,8 @@ import { getChinatime } from '@/utils/utils'
             },
             cancelAll(){
                 this.$message({
-                    type: "info",
-                    message: "已取消删除"
+                    type: "success",
+                    message: "切换成功"
                 });
                 this.$refs.chcked.toggleAllSelection()
             }

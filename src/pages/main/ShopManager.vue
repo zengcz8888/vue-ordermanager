@@ -2,56 +2,81 @@
     <div class="shop_div">
         <div class="title_div">
             <p>店铺管理</p>
-            <el-button type="primary" size='mini'>保存</el-button>
+            <el-button type="primary" size='mini' @click="clickedit">保存</el-button>
         </div>
-        <el-form ref="form" :model="sizeForm" label-width="80px" size="mini" style="width:500px">
+        <el-form label-width="80px" size="mini" style="width:500px">
 
             <el-form-item label="店铺名称">
-                <el-input v-model="sizeForm.name" placeholder="粥品官纺（天府新谷）"></el-input>
+                <el-input v-model="name" placeholder="粥品官纺（天府新谷）"></el-input>
             </el-form-item>
 
             <el-form-item label="店铺公告">
-                <el-input type="textarea" v-model="sizeForm.des" size="mini"></el-input>
+                <el-input type="textarea" v-model="bulletin" size="mini"></el-input>
             </el-form-item>
 
             <el-form-item label="店铺头像">
+                <el-upload
+                
+                :action="UPLOAD_IMG_SHOP"
+                :show-file-list="false"
+                :on-success="avatarUploadSuccess"
+                >
+                <img :src="avatar == ''?'':ITEMS_IMG_SHOP+avatar">
+                
+                </el-upload>
                 
             </el-form-item>
 
             <el-form-item label="店铺图片">
+                <div style="display:flex;width:400px;justify-content: space-between;flex-wrap: wrap;">
+                    <el-upload 
+                class="avatar-uploader"
+                :action="UPLOAD_IMG_SHOP"
+                list-type="picture-card"
+                :on-success="shopimgsUploadSuccess"
+                :on-remove="removeImg"
+                :file-list="shopimgs"
+                >
                 
+                <i class="el-icon-plus "></i>
+                </el-upload>
+                
+                </div>
             </el-form-item>
 
             <el-form-item label="配送费">
-                <el-input v-model="sizeForm.resource" size="medium"></el-input>
+                <el-input v-model="deliveryPrice" size="medium"></el-input>
             </el-form-item>
 
             <el-form-item label="配送时间">
-                <el-input v-model="sizeForm.resource" size="medium"></el-input>
+                <el-input v-model="deliveryTime" size="medium"></el-input>
             </el-form-item>
 
             <el-form-item label="配送描述">
-                <el-input v-model="sizeForm.resource" size="medium"></el-input>
+                <el-input v-model="description" size="medium"></el-input>
             </el-form-item>
 
             <el-form-item label="店铺评分">
-                <el-input v-model="sizeForm.resource" size="medium"></el-input>
+                <el-input v-model="score" size="medium"></el-input>
             </el-form-item>
 
             <el-form-item label="销量">
-                <el-input v-model="sizeForm.resource" size="medium"></el-input>
+                <el-input v-model="sellCount" size="medium"></el-input>
             </el-form-item>
 
-            <el-form-item label="活动">
-                <el-checkbox v-model="checked">在线支付满28减5</el-checkbox>
-                <el-checkbox v-model="checked">VC无限橙果汁全场8折</el-checkbox>
-                <el-checkbox v-model="checked">单人精彩套餐</el-checkbox>
-                <el-checkbox v-model="checked">特价饮品8折抢购</el-checkbox>
-                <el-checkbox v-model="checked">单人特色套餐</el-checkbox>
+            <el-form-item label="活动" >
+                <el-checkbox-group v-model="supports">
+                    <el-checkbox label="冬季大促全场热饮8折"></el-checkbox>
+                    <el-checkbox label="套餐限时5折"></el-checkbox>
+                    <el-checkbox label="满减免10"></el-checkbox>
+                    <el-checkbox label="充值100送100"></el-checkbox>
+                    <el-checkbox label="充值1000送500"></el-checkbox>
+                    <el-checkbox label="首单额外减5块"></el-checkbox>
+                </el-checkbox-group>
             </el-form-item>
 
             <el-form-item label="营业时间">
-                <el-time-picker is-range v-model="value1" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择间范围"></el-time-picker>
+                <el-date-picker type="datetimerange" is-range v-model="date" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择间范围"></el-date-picker>
             </el-form-item>
 
                 
@@ -60,37 +85,110 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        sizeForm: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: '',
-          des:''
+import { info,UPLOAD_IMG_SHOP,ITEMS_IMG_SHOP,shopedit } from '@/api/apis'
+import { getChinatime } from "@/utils/utils";
+    export default {
+        data() {
+            return {
+                name:'',
+                bulletin:'',
+                avatar:'',
+                deliveryPrice:0,
+                deliveryTime:0,
+                description:'',
+                score:0,
+                sellCount:0,
+                supports:[],
+                pics:[],
+                date:[],
+                minPrice:'',
+                
+                imgUrl:'',
+                id:0,
+                
+                shopimgs: [],
+                dialogImageUrl:'',
+
+                UPLOAD_IMG_SHOP:'',
+                ITEMS_IMG_SHOP:'',
+            };
         },
-        value2:'',
-        value1:'',
-        checked:''
-      };
-    },
-    methods: {
-      onSubmit() {
-        console.log('submit!');
-      }
-    }
-  };
+        methods: {
+            handlePictureCardPreview(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+            avatarUploadSuccess(res) {
+                if (res.code == 0) {
+                    this.avatar = res.imgUrl;
+                    this.$message({
+                        type: "success",
+                        message: "店铺头像上传成功"
+                    });
+                }
+            },
+            shopimgsUploadSuccess(res){
+                if (res.code == 0) this.pics.push(res.imgUrl);
+            },
+            removeImg(res) {
+                this.pics.splice(this.pics.indexOf(res.name), 1);
+            },
+            clickedit(){
+                
+                    let obj = {
+                        id:this.id,
+                        name:this.name,
+                        bulletin:this.bulletin,
+                        avatar:this.avatar,
+                        deliveryPrice:this.deliveryPrice,
+                        deliveryTime:this.deliveryTime,
+                        description:this.description,
+                        score:this.score,
+                        sellCount:this.sellCount,
+                        supports: JSON.stringify(this.supports),
+                        date: JSON.stringify([
+                            getChinatime(this.date[0]),
+                            getChinatime(this.date[1])
+                        ]),
+                        pics: JSON.stringify(this.pics)
+                    }
+                    shopedit(obj).then(res => {
+                        if (res.data.code == 0) {
+                            console.log(res)
+                            this.$message({
+                                type: "success",
+                                message: "保存成功!"
+                            });
+                        }
+                    });
+
+
+                    
+            }
+        },
+        created(){
+            this.ITEMS_IMG_SHOP = ITEMS_IMG_SHOP
+            this.UPLOAD_IMG_SHOP = UPLOAD_IMG_SHOP
+            info().then(res => {
+                for(let key in res.data.data){
+                    this[key] = res.data.data[key]
+                }
+                this.shopimgs = this.pics.map(imgstr => {
+                    return{
+                        name:imgstr,
+                        url:ITEMS_IMG_SHOP + imgstr
+                    }
+                })
+                
+            })
+        }
+    };
 </script>
 
 <style lang="less" scoped>
     
     .shop_div{
-        height: 700px;
+        height: 1400px;
         background: #fff;
         border-radius: 5px;
     }
@@ -100,5 +198,29 @@
         border-bottom: 1px solid #ccc;
         padding: 10px;
         margin-bottom: 20px;
+        
+    }
+    .avatar-uploader .el-upload ,.avatar-uploader-icon{
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px;
+        text-align: center;
+    }
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
     }
 </style>
