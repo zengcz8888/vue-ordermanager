@@ -34,7 +34,7 @@
             </el-form-item>
 
             <el-form-item label="商品描述">
-                <el-input type="textarea" v-model="goodsDesc"></el-input>
+                <el-input type="textarea" v-model="goodsDesc" rows="3"></el-input>
             </el-form-item>
 
             <el-form-item>

@@ -8,22 +8,22 @@
 
             <el-table-column prop="id" label="序号"></el-table-column>
 
-            <el-table-column label="分类名称" width="300px">
+            <el-table-column label="分类名称">
                 <template slot-scope="scope">
                     <span v-show="!scope.row.isedit">{{ scope.row.cateName }}</span>
                     <el-input type="text" v-show="scope.row.isedit" v-model="scope.row.cateName" />
                 </template>
             </el-table-column>
 
-            <el-table-column label="是否启用" width="300px">
+            <el-table-column label="是否启用">
                 <template slot-scope="scope">
                     <el-switch :disabled="!scope.row.isedit" v-model="scope.row.state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
                 </template>
             </el-table-column>
 
-            <el-table-column label="操作" width="300px">
+            <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="clickEdit(scope)">{{ scope.row.isedit ? '完成': '编辑' }}</el-button>
+                    <el-button size="mini" @click="clickEdit(scope)" type="primary">{{ scope.row.isedit ? '完成': '编辑' }}</el-button>
                     <el-button size="mini" type="danger" @click="clickDelete(scope)">删除</el-button>
                 </template>
             </el-table-column>

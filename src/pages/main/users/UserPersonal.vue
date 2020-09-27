@@ -38,7 +38,8 @@
                 <el-divider></el-divider>
 
                 <p>
-                    管理员头像：<img :src="imgUrl" alt="">
+                    管理员头像：
+                    <!-- <img :src="imgUrl" alt=""> -->
                     <el-upload
                     class="avatar-uploader"
                     :action="USERS_IMG_ACC"
@@ -47,9 +48,9 @@
                     
                     :data="data"
                     >
-                    <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar"> -->
+                    <img v-if="imgUrl" :src="imgUrl" class="avatar">
                     
-                    <i  class="el-icon-plus avatar-uploader-icon"></i>
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
                 </p> 
                 <el-divider></el-divider>

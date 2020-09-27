@@ -1,11 +1,13 @@
 <template>
     <el-container>
-        <el-aside width="200px">
-            <el-menu :default-active="hash" class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" fontWeight="bold" active-text-color="#ffd04b" router unique-opened>
+        <el-aside width="auto">
+            
+            
+            <el-menu :default-active="hash" class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#545c64" text-color="#fff"  active-text-color="#ffd04b" router unique-opened>
 
-                <div v-for='(item,index) in powerarr' :key="index">
+                <template v-for='(item,index) in powerarr'>
 
-                    <el-submenu v-if="item.children" :index="item.index">
+                    <el-submenu v-if="item.children" :index="item.index"  :key="index">
                         
                         <template slot="title">
                             <i :class="item.i"></i>
@@ -16,12 +18,12 @@
                         
                     </el-submenu>
                     
-                    <el-menu-item v-else :index="item.index">
+                    <el-menu-item v-else :index="item.index"  :key="index">
                         <i :class="item.i"></i>
                         <span slot="title">{{ item.name }}</span>
                     </el-menu-item>
 
-                </div>
+                </template>
 
             </el-menu>
         </el-aside>
@@ -31,8 +33,10 @@
 
         <el-header  style="border-bottom:1px solid #ccc">
 
-            <div>
+            <div style="display:flex;align-items: center;">
+                <el-button @click="clickSw" type="info"></el-button>
                 <el-breadcrumb separator-class="el-icon-arrow-right">
+                    
                     <el-breadcrumb-item v-for="item in breadlist" :key="item">{{item}}</el-breadcrumb-item>
                     
                 </el-breadcrumb>
@@ -44,8 +48,10 @@
             </div>
         </el-header>
 
-        <el-main  name="el-fade-in-linear">
-            <router-view></router-view>
+        <el-main>
+            
+                <router-view></router-view>
+            
         </el-main>
 
         </el-container>
@@ -61,6 +67,7 @@ export default {
         return{
             username:'',
             imgUrl:'',
+            isCollapse: true,
             list:[
                 {
                     index:'/main/index',
@@ -154,6 +161,9 @@ export default {
         
     },
     methods:{
+        clickSw(){
+            this.isCollapse = this.isCollapse == true ?false :true
+        },
         clickLog(){
             if(this.username =='请登录'){
                 this.$router.push('/')
@@ -227,4 +237,10 @@ export default {
     display: flex;
     align-items: center;
 }
+.el-tooltip{
+    width: 40px;
+}
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+  }
 </style>

@@ -11,7 +11,7 @@
             </el-form-item>
 
             <el-form-item label="店铺公告">
-                <el-input type="textarea" v-model="bulletin" size="mini"></el-input>
+                <el-input type="textarea" v-model="bulletin"  rows="6"></el-input>
             </el-form-item>
 
             <el-form-item label="店铺头像">
@@ -65,18 +65,23 @@
             </el-form-item>
 
             <el-form-item label="活动" >
-                <el-checkbox-group v-model="supports">
-                    <el-checkbox label="冬季大促全场热饮8折"></el-checkbox>
-                    <el-checkbox label="套餐限时5折"></el-checkbox>
-                    <el-checkbox label="满减免10"></el-checkbox>
-                    <el-checkbox label="充值100送100"></el-checkbox>
-                    <el-checkbox label="充值1000送500"></el-checkbox>
-                    <el-checkbox label="首单额外减5块"></el-checkbox>
+                <template>
+                    
+                        <el-button @click="clickAdd" type="primary">添加活动</el-button>
+
+                    <el-tooltip class="item" effect="dark" content="选中活动点击删除" placement="top-start">
+                        <el-button @click="clickdel" type="danger">删除活动</el-button>
+                    </el-tooltip> 
+                    
+                    <el-input type="text" v-model="active" style="margin-top:10px"/>
+                </template>
+                <el-checkbox-group v-model="activeName">
+                    <el-checkbox v-for="item in activelist" :key="item" :label="item"></el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
 
             <el-form-item label="营业时间">
-                <el-date-picker type="datetimerange" is-range v-model="date" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择间范围"></el-date-picker>
+                <el-time-picker type="datetimerange" is-range v-model="date" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择间范围"></el-time-picker>
             </el-form-item>
 
                 
@@ -108,12 +113,27 @@ import { getChinatime } from "@/utils/utils";
                 
                 shopimgs: [],
                 dialogImageUrl:'',
+                activeName:[],//选中的
+                activelist:[],//所有的
+                active:'',
 
                 UPLOAD_IMG_SHOP:'',
                 ITEMS_IMG_SHOP:'',
             };
         },
         methods: {
+            clickAdd(){
+                this.activelist.push(this.active)
+                this.supports = this.activelist
+            },
+            clickdel(){
+                
+                let arr = this.activelist.filter((x) => {
+                    return  !this.activeName.includes(x)
+                })
+                this.activelist = arr
+                this.supports = this.activelist
+            },
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
@@ -134,7 +154,7 @@ import { getChinatime } from "@/utils/utils";
                 this.pics.splice(this.pics.indexOf(res.name), 1);
             },
             clickedit(){
-                
+                    
                     let obj = {
                         id:this.id,
                         name:this.name,
@@ -152,9 +172,10 @@ import { getChinatime } from "@/utils/utils";
                         ]),
                         pics: JSON.stringify(this.pics)
                     }
+                    
                     shopedit(obj).then(res => {
                         if (res.data.code == 0) {
-                            console.log(res)
+                            
                             this.$message({
                                 type: "success",
                                 message: "保存成功!"
@@ -167,12 +188,16 @@ import { getChinatime } from "@/utils/utils";
             }
         },
         created(){
+
+            
             this.ITEMS_IMG_SHOP = ITEMS_IMG_SHOP
             this.UPLOAD_IMG_SHOP = UPLOAD_IMG_SHOP
             info().then(res => {
                 for(let key in res.data.data){
                     this[key] = res.data.data[key]
                 }
+                this.activelist = [...this.activelist,...this.supports]
+                
                 this.shopimgs = this.pics.map(imgstr => {
                     return{
                         name:imgstr,

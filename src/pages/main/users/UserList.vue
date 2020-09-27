@@ -29,7 +29,7 @@
 
             <el-table-column prop="address" label="操作">
                 <template slot-scope="scope">
-                    <el-button size="mini" @click="clickEdit(scope)">{{ scope.row.isedit ? '完成' : '编辑' }}</el-button> 
+                    <el-button size="mini" @click="clickEdit(scope)" type="primary">{{ scope.row.isedit ? '完成' : '编辑' }}</el-button> 
                     <el-button size="mini" type="danger" @click="clickDele(scope)">删除</el-button>
                 </template>
             </el-table-column>
@@ -120,7 +120,7 @@ import { getChinatime } from '@/utils/utils'
                     
             },
             clickDele(scope){
-                console.log(scope.row)
+                
                 this.$confirm("此操作将永久删除数据, 是否继续?", {
                     confirmButtonText: "狠心删除",
                     cancelButtonText: "保留数据",
