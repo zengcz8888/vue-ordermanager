@@ -1,7 +1,10 @@
 <template>
     <el-container>
         <el-aside width="auto">
-            
+            <template style="width:100%;">
+                <img :src="ITEMS_IMG_SHOP+avartar" alt="" :style="width">
+                <p v-show="show" style="color:#fff;font-size:20px;text-align: center;">外卖管理平台</p>
+            </template>
             
             <el-menu :default-active="hash" class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#545c64" text-color="#fff"  active-text-color="#ffd04b" router unique-opened>
 
@@ -34,10 +37,10 @@
         <el-header  style="border-bottom:1px solid #ccc">
 
             <div style="display:flex;align-items: center;">
-                <el-button @click="clickSw" type="info"></el-button>
+                <i :class="clas" @click="clickSw"></i>
                 <el-breadcrumb separator-class="el-icon-arrow-right">
                     
-                    <el-breadcrumb-item v-for="item in breadlist" :key="item">{{item}}</el-breadcrumb-item>
+                    <el-breadcrumb-item v-for="item in breadlist" :key="item" style="margin-left:10px">{{item}}</el-breadcrumb-item>
                     
                 </el-breadcrumb>
             </div>
@@ -61,12 +64,13 @@
 </template>
 
 <script>
-import { checktoKen,accountinfo } from "@/api/apis";
+import { checktoKen,accountinfo,ITEMS_IMG_SHOP,info} from "@/api/apis";
 export default {
     data(){
         return{
             username:'',
             imgUrl:'',
+            avartar:'',
             isCollapse: true,
             list:[
                 {
@@ -148,7 +152,11 @@ export default {
                 }
             ],
             breadlist:[],
-            hash:'/main/index'
+            hash:'/main/index',
+            ITEMS_IMG_SHOP:'',
+            show:false,
+            width:'width:70px;height:60px',
+            clas:'el-icon-minus'
         }
     },
     computed:{
@@ -163,6 +171,12 @@ export default {
     methods:{
         clickSw(){
             this.isCollapse = this.isCollapse == true ?false :true
+            this.clas = this.clas == 'el-icon-minus' ?  'el-icon-plus': 'el-icon-minus'
+            this.width = this.width == 'width:70px;height:60px' ? 'width:200px;height:60px':  'width:70px;height:60px'
+            
+                this.show = !this.show
+            
+            
         },
         clickLog(){
             if(this.username =='请登录'){
@@ -177,9 +191,18 @@ export default {
             this.imgUrl = res.data.accountInfo.imgUrl
             
             })
-        }
+        },
+        AvatarSuccess() {
+            info().then(res => {
+                this.avartar = res.data.data.avatar
+            })
+            
+        },
+
     },
     created() {
+        this.ITEMS_IMG_SHOP = ITEMS_IMG_SHOP
+        
         this.hash = this.$route.path
         checktoKen(localStorage.token).then(res => {
         if (res.data.code == 0) {
@@ -192,8 +215,9 @@ export default {
         }
         }),
         this.refreshinfo()
+        this.AvatarSuccess()
         this.$bus.$on('imgfinish',() => this.refreshinfo())
-            
+        this.$bus.$on('avatar',() => this.AvatarSuccess())
         this.breadlist = this.$route.meta.breadlist;
   }
     ,
@@ -214,11 +238,13 @@ export default {
 
 .el-container{
     height: 100%;
+    
 }
 .el-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    
     background-color: #fff;
 }
 

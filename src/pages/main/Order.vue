@@ -28,7 +28,7 @@
 
             </el-form>
         </div>
-        <el-table :data="tableData" style="width: 100%;">
+        <el-table :data="tableData">
             <el-table-column prop="orderNo" label="订单号">
                 <template slot-scope="scope">
                     <span v-show="!isedit">{{scope.row.orderNo}}</span>
@@ -77,7 +77,7 @@
                     <el-input v-show="isedit" v-model="scope.row.orderState" />
                 </template>
             </el-table-column>
-            <el-table-column  label="操作">
+            <el-table-column  label="操作" fixed="right">
                 <template slot-scope="scope">
                     <el-button @click="handleClick(scope)" type="text" size="small">查看</el-button>
                     <el-button type="text" size="small" @click="clickedit(scope)">{{ isedit ? '完成' : '编辑' }}</el-button>
@@ -173,11 +173,11 @@ import { getChinatime } from '@/utils/utils'
                 isedit:false,
 
                 option: ["已完成", "派送中", "已受理", "全部"],
-                orderNo: "", //订单号
-                consignee: "", //收货人
-                phone: "", //手机号
-                orderState: "", //订单状态
-                date: [new Date("1998-9-18 16:42:20"), new Date()],
+                orderNo: "", 
+                consignee: "", 
+                phone: "", 
+                orderState: "", 
+                date: [new Date("1998-11-07 16:42:20"), new Date()],
             }
         },
         methods: {

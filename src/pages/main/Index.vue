@@ -52,7 +52,7 @@ import { totaldata } from '@/api/apis'
         mounted(){
 
             totaldata().then(res => {
-                console.log(res.data)
+                
                 this.list[0].num = res.data.totalOrder
                 this.list[1].num = res.data.totalAmount
                 this.list[2].num = res.data.todayOrder

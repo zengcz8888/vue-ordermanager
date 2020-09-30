@@ -21,7 +21,7 @@
                 :show-file-list="false"
                 :on-success="avatarUploadSuccess"
                 >
-                <img :src="avatar == ''?'':ITEMS_IMG_SHOP+avatar">
+                <img :src="avatar == ''?'':ITEMS_IMG_SHOP+avatar" style="width:178px;height:178px">
                 
                 </el-upload>
                 
@@ -114,7 +114,7 @@ import { getChinatime } from "@/utils/utils";
                 shopimgs: [],
                 dialogImageUrl:'',
                 activeName:[],//选中的
-                activelist:[],//所有的
+                activelist:['满减'],//所有的
                 active:'',
 
                 UPLOAD_IMG_SHOP:'',
@@ -134,13 +134,14 @@ import { getChinatime } from "@/utils/utils";
                 this.activelist = arr
                 this.supports = this.activelist
             },
-            handlePictureCardPreview(file) {
-                this.dialogImageUrl = file.url;
-                this.dialogVisible = true;
-            },
+            // handlePictureCardPreview(file) {
+            //     this.dialogImageUrl = file.url;
+            //     this.dialogVisible = true;
+            // },
             avatarUploadSuccess(res) {
                 if (res.code == 0) {
                     this.avatar = res.imgUrl;
+                    this.$bus.$emit('avatar')
                     this.$message({
                         type: "success",
                         message: "店铺头像上传成功"
@@ -188,7 +189,7 @@ import { getChinatime } from "@/utils/utils";
             }
         },
         created(){
-
+            
             
             this.ITEMS_IMG_SHOP = ITEMS_IMG_SHOP
             this.UPLOAD_IMG_SHOP = UPLOAD_IMG_SHOP

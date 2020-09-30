@@ -19,13 +19,18 @@ import {login} from '@/api/apis'
         return {
             acc:'',
             pwd:'',
-            errormsg:''
+            errormsg:'',
+            si:true,
         }
     },
     methods: {
         clickLog(){
             let obj = {account: this.acc, password: this.pwd}
-
+            if(!this.si) return
+            setTimeout(() => {
+                this.si = true
+            },3000)
+            this.si = false 
             login(obj).then(res => {
                 if(res.data.code == 0) {
                     localStorage.token = res.data.token
